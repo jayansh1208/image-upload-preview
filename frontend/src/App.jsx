@@ -93,7 +93,8 @@ function Upload() {
     formData.append('image', selectedFile);
 
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -181,7 +182,8 @@ function Gallery() {
 
   const fetchImages = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/images');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/images`);
       const data = await res.json();
       setImages(data.images || []);
     } catch (err) {
@@ -218,24 +220,25 @@ function Gallery() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {images.map((imgUrl, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group flex flex-col">
-                <div className="h-56 relative overflow-hidden bg-gray-100">
-                  <img
-                    src={`http://localhost:5000${imgUrl}`}
-                    alt={`Upload ${index + 1}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-4 bg-white flex-grow flex items-end">
-                  <button
-                    onClick={() => setPreviewImage(imgUrl)}
-                    className="w-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 rounded-xl transition-colors duration-200"
-                  >
-                    View Full Image
-                  </button>
-                </div>
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            return (
+            <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group flex flex-col">
+              <div className="h-56 relative overflow-hidden bg-gray-100">
+                <img
+                  src={`${apiUrl}${imgUrl}`}
+                  alt={`Upload ${index + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
+              <div className="p-4 bg-white flex-grow flex items-end">
+                <button
+                  onClick={() => setPreviewImage(imgUrl)}
+                  className="w-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 rounded-xl transition-colors duration-200"
+                >
+                  View Full Image
+                </button>
+              </div>
+            </div>
             ))}
           </div>
         )}
